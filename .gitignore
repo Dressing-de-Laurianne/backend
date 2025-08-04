@@ -1,0 +1,22 @@
+# Fichiers et dossiers à ignorer
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+.DS_Store
+*.log
+
+.env
+photos/
+database.sqlite3
+
+# VSCode
+.vscode/
+# Docker
+*.pid
+# Autres fichiers temporaires
+*.swp
+*.bak
+*.tmp
