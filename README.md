@@ -1,28 +1,69 @@
 
-# Utilisation locale
+# Dressing API Project
 
-1. Installez les dépendances :
-   ```powershell
-   pip install -r requirements.txt
-   ```
+This project is a Django REST API for managing a virtual wardrobe, built with Django, Django REST Framework and SQLite. It includes a Swagger UI for API exploration and is based on the official Django REST Framework tutorial.
 
-2. Lancez le serveur Flask :
-   ```powershell
-   python app/main.py
-   ```
+## 🚀 Running with Docker
 
-   > Lors du premier démarrage, la base SQLite (`database.sqlite3`) sera automatiquement créée si elle n'existe pas, avec le bon schéma.
+To start the project in production mode:
 
-3. Accédez à la documentation Swagger/OpenAPI :
-   Ouvrez http://localhost:5000/swagger/ dans votre navigateur.
+```bash
+docker compose up --build
+```
 
-# Utilisation avec Docker
+This will:
+- Build the Docker image
+- Start the Django app containing the SQLite database
+- Run migrations and create an initial superuser (admin/admin)
 
-1. Lancez l'API avec Docker Compose :
-   ```powershell
-   docker-compose up --build
-   ```
+## 🛠️ Development with Docker
 
-   - Les fichiers et la base sont persistés sur votre machine via les volumes.
-   - L'API est accessible sur http://localhost:5000
-   - La documentation Swagger est disponible sur http://localhost:5000/swagger/
+For development, use the dev compose file to mount your local code and see changes live:
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
+
+This will:
+- Mount your local folder into the container
+- Reload code changes automatically
+- Use the same database and admin credentials
+
+## 📚 Project Details
+
+The project is organized into several Django apps:
+- `item`: Manage clothing items
+- `outfit`: Manage group of items
+- `order`: Manage orders
+- `hanger`, : Manage connected hander
+
+### API Endpoints
+
+The API exposes endpoints for managing items, orders, and more. Example endpoints:
+
+- `/api/items/` — List and create clothing items
+- `/api/orders/` — List and manage orders
+
+> The API is based on the Django REST Framework tutorial: [DRF Serialization Tutorial](https://www.django-rest-framework.org/tutorial/1-serialization/)
+
+### 🔎 API Documentation (Swagger UI)
+
+Interactive API documentation is available at:
+
+```
+http://localhost:8000/api/schema/swagger-ui/
+```
+
+You can explore and test all endpoints directly from the browser.
+
+---
+
+Feel free to contribute or adapt this project for your own needs!
+
+---
+
+## TODO
+
+- Check and validate image upload and serving for items (media support)
+- Add tag logic for items, similar to the original project (tagging system)
+- Switch the environment to production mode (update settings, security, etc.)

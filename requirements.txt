@@ -1,5 +1,6 @@
-flask
-flask-restx
-flask-cors
-requests
-gunicorn
+Django>=4.2.23
+djangorestframework>=3.16.0
+markdown>=3.8.2
+django-filter>=25.1
+pillow>=11.3.0
+drf-spectacular[sidecar]>=0.28.0

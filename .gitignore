@@ -1,17 +1,26 @@
-# Fichiers et dossiers à ignorer
-__pycache__/
+# Django
 *.pyc
-*.pyo
-*.pyd
-*.db
+__pycache__/
+db.sqlite3
 *.sqlite3
-.DS_Store
 *.log
-
+*.pot
+*.py[cod]
+*.swp
+*.swo
+*.bak
+*.tmp
+.DS_Store
 .env
-photos/
-database.sqlite3
-
+.env.*
+.venv/
+venv/
+ENV/
+build/
+dist/
+*.egg-info/
+media/
+staticfiles/
 # VSCode
 .vscode/
 # Docker
@@ -20,3 +29,28 @@ database.sqlite3
 *.swp
 *.bak
 *.tmp
+# OS
+Thumbs.db
+ehthumbs.db
+Icon?
+# Pytest
+.cache/
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+.tox/
+# mypy
+.mypy_cache/
+.dmypy.json
+# pipenv
+Pipfile.lock
+# celery
+celerybeat-schedule
+celerybeat.pid
+# pytest
+.pytest_cache/
+# local settings
+local_settings.py
+# Sentry
+.sentryclirc

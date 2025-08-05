@@ -1,11 +1,8 @@
 services:
   api:
     build: .
-    ports:
-      - "5000:5000"
+    tty: true
     volumes:
-      - ./photos:/app/photos
-      - ./database.sqlite3:/app/database.sqlite3
-    environment:
-      - FLASK_ENV=development
-    restart: unless-stopped
+      - ./db:/app/db
+    ports:
+      - "8000:8000"

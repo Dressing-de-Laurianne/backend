@@ -1,21 +1,25 @@
-# Utilise une image Python officielle
-FROM python:3.13-slim
+# Use an official Python image as a parent image
+FROM python:3.11-slim
 
+# Set the working directory in the container
 WORKDIR /app
 
-# Installe les dépendances
-COPY requirements.txt /app/requirements.txt
+# Copy requirements file and install dependencies
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copie le code
-COPY app /app/app
+# Copy the entire project code into the container
+COPY . .
 
-# Crée le dossier pour les photos
-RUN mkdir -p photos
+# Collect static files (optional, useful if you use collectstatic)
+# RUN python manage.py collectstatic --noinput
 
-# Expose le port Flask
-EXPOSE 5000
+# Expose port 8000
+EXPOSE 8000
 
-# Lance l'API
-CMD ["python", "app/main.py"]
-#CMD ["gunicorn", "-b", "0.0.0.0:5000", "app.main:app"]
+# Make the entrypoint script executable and use it as entrypoint
+RUN chmod +x /app/entrypoint.sh
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+# Set the default command to run when the container starts
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
