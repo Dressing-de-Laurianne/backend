@@ -4,24 +4,6 @@ from rest_framework.response import Response
 from tag.models import Tag
 from tag.serializers import TagSerializer
 
-# Variables globales pour la gestion des associations
-TAG_WAIT_ITEM_ID = None
-TAG_FOUND_ID = None
-ITEM_FOUND_ID = None
-HANGER_FOUND_ID = None
-
-
-def tag_received(tag):
-    """
-    Function to handle the reception of a tag.
-    It updates the global variables based on the tag received.
-    """
-    global TAG_WAIT_ITEM_ID, TAG_FOUND_ID, ITEM_FOUND_ID, HANGER_FOUND_ID
-    TAG_WAIT_ITEM_ID = None
-    TAG_FOUND_ID = tag.id
-    ITEM_FOUND_ID = tag.item_id
-    HANGER_FOUND_ID = tag.hanger_id
-
 
 class TagList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     queryset = Tag.objects.all()

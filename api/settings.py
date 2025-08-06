@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "outfit",
     "order",
     "tag",
+    "tag_read",
 ]
 
 REST_FRAMEWORK = {
@@ -62,6 +63,20 @@ SPECTACULAR_SETTINGS = {
     "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
     "REDOC_DIST": "SIDECAR",
     # OTHER SETTINGS
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "WARNING",
+    },
 }
 
 MIDDLEWARE = [

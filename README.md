@@ -75,5 +75,4 @@ Feel free to contribute or adapt this project for your own needs!
 ## TODO
 
 - Check and validate image upload and serving for items (media support)
-- Add tag logic for items, similar to the original project (tagging system)
 - Switch the environment to production mode (update settings, security, etc.)
