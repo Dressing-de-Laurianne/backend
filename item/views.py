@@ -1,6 +1,7 @@
+from rest_framework import generics
+
 from item.models import Item
 from item.serializers import ItemSerializer
-from rest_framework import generics
 
 
 class ItemList(generics.ListCreateAPIView):

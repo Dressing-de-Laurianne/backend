@@ -1,4 +1,3 @@
-
 # Dressing API Project
 
 This project is a Django REST API for managing a virtual wardrobe, built with Django, Django REST Framework and SQLite. It includes a Swagger UI for API exploration and is based on the official Django REST Framework tutorial.
@@ -24,10 +23,21 @@ For development, use the dev compose file to mount your local code and see chang
 docker compose -f docker-compose.dev.yml up --build
 ```
 
+## 🧹 Code Quality with pre-commit
+
+To install and use pre-commit hooks for code quality checks:
+
+```bash
+pip install pre-commit
+pre-commit install
+pre-commit run --all-files
+```
+
 This will:
-- Mount your local folder into the container
-- Reload code changes automatically
-- Use the same database and admin credentials
+- Install pre-commit hooks
+- Activate them for future commits
+- Run all checks on your codebase
+
 
 ## 📚 Project Details
 

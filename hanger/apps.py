@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class HangerConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'hanger'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "hanger"

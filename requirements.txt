@@ -4,3 +4,4 @@ markdown>=3.8.2
 django-filter>=25.1
 pillow>=11.3.0
 drf-spectacular[sidecar]>=0.28.0
+pre-commit>=4.2.0
