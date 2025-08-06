@@ -5,3 +5,9 @@ django-filter>=25.1
 pillow>=11.3.0
 drf-spectacular[sidecar]>=0.28.0
 pre-commit>=4.2.0
+
+django-extensions>=4.1
+# Install Graphviz https://graphviz.org/download/
+#pygraphviz>=1.11
+pyparsing>=3.2.3
+pydot>=4.0.1

@@ -66,11 +66,44 @@ http://localhost:8000/api/schema/swagger-ui/
 
 You can explore and test all endpoints directly from the browser.
 
+
+
 ---
 
 Feel free to contribute or adapt this project for your own needs!
 
 ---
+
+
+## 🗺️ Database Schema Visualization with graph_models
+
+To generate a visual graph of your Django models, we use the `django-extensions` package and the `graph_models` command.
+
+### Database Schema
+
+Below is an example of the generated database schema (`db_schema.png`):
+
+<p align="center">
+<img width="500" src="db_schema.png" /></p>
+
+### Installation
+
+Install Graphviz from [https://graphviz.org/download/](https://graphviz.org/download/).
+
+
+### Generate the Model Graph
+
+Run the following command to generate a PNG image of your database schema:
+
+```bash
+python manage.py graph_models --pydot -o db_schema.png
+```
+
+See the [https://django-extensions.readthedocs.io/en/latest/graph_models.html](documentation) for details.
+- `-a` includes all apps.
+
+You can then open `db_schema.png` to view your database schema visually.
+
 
 ## TODO
 
