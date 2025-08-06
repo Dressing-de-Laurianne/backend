@@ -74,5 +74,7 @@ Feel free to contribute or adapt this project for your own needs!
 
 ## TODO
 
-- Check and validate image upload and serving for items (media support)
-- Switch the environment to production mode (update settings, security, etc.)
+- Check and validate image upload and serving for items (media support).
+- Switch the environment to production mode (update settings, security, etc.).
+- Add tests to each API endpoints.
+- Adapt the front to use this new API version.
