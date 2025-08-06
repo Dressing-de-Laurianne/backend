@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "hanger",
     "outfit",
     "order",
+    "tag",
 ]
 
 REST_FRAMEWORK = {

@@ -33,4 +33,5 @@ urlpatterns = [
     path("", include("hanger.urls")),
     path("", include("outfit.urls")),
     path("", include("order.urls")),
+    path("", include("tag.urls")),
 ]

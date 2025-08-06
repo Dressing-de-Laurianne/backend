@@ -36,12 +36,10 @@ class Item(models.Model):
         choices=COLOR_CHOICES, default="Black", max_length=100, blank=True
     )
     description = models.TextField(blank=True, default="")
-    tag = models.CharField(max_length=100, blank=True, null=True)
     # hanger_id = models.ForeignKey('hanger.Hanger', on_delete=models.SET_NULL, related_name='items', unique=True, blank=True, null=True, help_text="Hanger associated with this item. NULL is no hanger associated.")
     hanger_id = models.OneToOneField(
         "hanger.Hanger",
         on_delete=models.SET_NULL,
-        related_name="items",
         blank=True,
         null=True,
         help_text="Hanger associated with this item. NULL is no hanger associated.",
