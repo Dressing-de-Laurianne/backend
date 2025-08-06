@@ -66,7 +66,26 @@ http://localhost:8000/api/schema/swagger-ui/
 
 You can explore and test all endpoints directly from the browser.
 
+## 🧪 Running Tests
 
+Before running tests, make sure your database is up to date:
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+To run all tests for the project:
+
+```bash
+python manage.py test
+```
+
+To run tests for a specific app (e.g., `item`):
+
+```bash
+python manage.py test item
+```
 
 ---
 
