@@ -13,6 +13,7 @@ class Tag(models.Model):
         blank=True,
         null=True,
         unique=True,
+        # limit_choices_to={"tag": None},
         help_text="Hanger associated with this tag. NULL is no hanger associated.",
     )
     item_id = models.OneToOneField(

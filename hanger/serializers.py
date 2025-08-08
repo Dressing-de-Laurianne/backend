@@ -7,7 +7,7 @@ from tag.models import Tag
 class HangerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hanger
-        fields = ["id", "mqtt_topic"]
+        fields = ["id", "mqtt_topic", "created"]
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)

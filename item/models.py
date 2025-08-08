@@ -45,5 +45,8 @@ class Item(models.Model):
         help_text="Hanger associated with this item. NULL is no hanger associated.",
     )
 
+    def __str__(self):
+        return " [" + str(self.id) + "] " + self.title
+
     class Meta:
         ordering = ["created"]
