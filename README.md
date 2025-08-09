@@ -81,12 +81,6 @@ To run all tests for the project:
 python manage.py test
 ```
 
-To run tests for a specific app (e.g., `item`):
-
-```bash
-python manage.py test item
-```
-
 ---
 
 Feel free to contribute or adapt this project for your own needs!
