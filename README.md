@@ -71,6 +71,7 @@ You can explore and test all endpoints directly from the browser.
 Before running tests, make sure your database is up to date:
 
 ```bash
+pip install -r requirements.txt
 python manage.py makemigrations
 python manage.py migrate
 ```
