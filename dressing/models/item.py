@@ -35,7 +35,7 @@ class Item(models.Model):
     title = models.CharField(max_length=100, blank=True, default="")
     size = models.CharField(choices=SIZE_CHOICES, default="M", max_length=100)
     type = models.CharField(choices=TYPE_CHOICES, default="Shirt", max_length=100)
-    image = models.ImageField(upload_to="images/", blank=True, null=True, default=None)
+    image = models.ImageField(upload_to="uploads/", blank=True, null=True, default=None)
     color = models.CharField(
         choices=COLOR_CHOICES, default="Black", max_length=100, blank=True
     )

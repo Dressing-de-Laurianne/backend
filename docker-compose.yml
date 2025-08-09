@@ -4,5 +4,6 @@ services:
     tty: true
     volumes:
       - ./db:/app/db
+      - ./media:/app/media
     ports:
       - "8000:8000"

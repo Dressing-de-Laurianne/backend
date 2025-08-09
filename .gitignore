@@ -19,7 +19,7 @@ ENV/
 build/
 dist/
 *.egg-info/
-media/
+media/uploads/
 staticfiles/
 # VSCode
 .vscode/
