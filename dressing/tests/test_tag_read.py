@@ -1,13 +1,17 @@
 import threading
+import time
 
 from django.test import TransactionTestCase
+from django.test.testcases import SerializeMixin
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from dressing.models import Hanger, Item, Tag
 
 
-class TagReadAPITestCase(TransactionTestCase):
+class TagReadTestCaseMixin(TransactionTestCase, SerializeMixin):
+    lockfile = __file__
+
     def setUp(self):
         self.client = APIClient()
         self.client.login(username="admin", password="admin")
@@ -32,6 +36,14 @@ class TagReadAPITestCase(TransactionTestCase):
         )
         self.tag_without_item = Tag.objects.create(tag="myTagWithoutItem")
 
+        self.hanger_without_tag = Hanger.objects.create(
+            mqtt_topic="/feed/hanger_withouttag"
+        )
+        self.tag_without_hanger = Tag.objects.create(tag="myTagWithoutHanger")
+
+
+class TagReadAPITestCase_item_with_hanger(TagReadTestCaseMixin):
+
     def test_associate_item_with_hanger(self):
         data = {
             "tag": self.tag_item.tag,
@@ -52,6 +64,9 @@ class TagReadAPITestCase(TransactionTestCase):
         self.assertEqual(response_dict["message"]["status"], "association_complete")
 
         self.assertEqual(Item.objects.get(pk=self.item.pk).hanger_id, self.hanger)
+
+
+class TagReadAPITestCase_hanger_with_item(TagReadTestCaseMixin):
 
     def test_associate_hanger_with_item(self):
         data = {
@@ -74,22 +89,24 @@ class TagReadAPITestCase(TransactionTestCase):
 
         self.assertEqual(Item.objects.get(pk=self.item.pk).hanger_id, self.hanger)
 
+
+class TagReadAPITestCase_tag_with_item(TagReadTestCaseMixin):
     def test_associate_tag_with_item(self):
 
         # Start the blocking call in a separate thread
 
         responses = {}
 
-        def blocking_call():
+        def blocking_call_item():
             resp = self.client.get(
                 "/tag_wait/item/" + str(self.item_without_tag.pk) + "/"
             )
             responses["blocking"] = resp
 
-        thread = threading.Thread(target=blocking_call)
+        thread = threading.Thread(target=blocking_call_item)
         thread.start()
+        time.sleep(0.5)
 
-        # self.assertEqual(Tag.objects.get(item_id=self.item_without_tag), None)
         self.assertEqual(Tag.objects.get(pk=self.tag_without_item.pk).item_id, None)
 
         # Simulate the action that unblocks the call
@@ -102,12 +119,49 @@ class TagReadAPITestCase(TransactionTestCase):
         # Wait for the blocking call to finish and check its response
         thread.join()
         blocking_response = responses["blocking"]
-        blocking_response_dict = blocking_response.json()
         self.assertEqual(blocking_response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            blocking_response_dict["message"]["status"], "association_complete"
-        )
+        self.assertEqual(blocking_response.json()["status"], "association_complete")
+        self.assertEqual(response.json()["message"]["status"], "association_complete")
 
         self.assertEqual(
             Tag.objects.get(item_id=self.item_without_tag.pk), self.tag_without_item
+        )
+
+
+class TagReadAPITestCase_tag_with_hanger(TagReadTestCaseMixin):
+    def test_associate_tag_with_hanger(self):
+
+        # Start the blocking call in a separate thread
+
+        responses = {}
+
+        def blocking_call_hanger():
+            resp = self.client.get(
+                "/tag_wait/hanger/" + str(self.hanger_without_tag.pk) + "/"
+            )
+            responses["blocking"] = resp
+
+        thread = threading.Thread(target=blocking_call_hanger)
+        thread.start()
+        time.sleep(0.5)
+
+        self.assertEqual(Tag.objects.get(pk=self.tag_without_hanger.pk).hanger_id, None)
+
+        # Simulate the action that unblocks the call
+        data = {
+            "tag": self.tag_without_hanger.tag,
+        }
+        response = self.client.post("/tag_read/", data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Wait for the blocking call to finish and check its response
+        thread.join()
+        blocking_response = responses["blocking"]
+        self.assertEqual(blocking_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(blocking_response.json()["status"], "association_complete")
+        self.assertEqual(response.json()["message"]["status"], "association_complete")
+
+        self.assertEqual(
+            Tag.objects.get(hanger_id=self.hanger_without_tag.pk),
+            self.tag_without_hanger,
         )

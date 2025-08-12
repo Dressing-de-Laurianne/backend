@@ -49,6 +49,7 @@ def tag_received(tag_received: str):
 
     message = {}
     if ns.TAG_WAIT_ID is not None:
+        message_object = None
         if ns.TAG_WAIT_TYPE == "item":
             tag.item_id = Item.objects.get(pk=ns.TAG_WAIT_ID)
             tag.save()
@@ -146,7 +147,9 @@ def tag_wait(request, type: str, id: int):
         ns.TAG_WAIT_ID = id
         ns.TAG_WAIT_TYPE = type
 
-        logger.info(f"Item waiting for tag (POST /tag_read/): {ns.TAG_WAIT_ID}")
+        logger.info(
+            f"{ns.TAG_WAIT_TYPE} waiting for tag (POST /tag_read/): {ns.TAG_WAIT_ID}"
+        )
         # Active wait until TAG_WAIT_ID is reset to None
         while ns.TAG_WAIT_ID is not None:
             time.sleep(0.5)

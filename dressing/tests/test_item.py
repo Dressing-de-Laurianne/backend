@@ -32,7 +32,15 @@ class ItemAPITestCase(TestCase):
 
         response = self.client.post("/items/", data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Item.objects.count(), 2)
+        self.assertTrue(Item.objects.filter(description="Blue denim jeans").exists())
+
+    def test_list_items(self):
+        url = "/items/"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_dict = response.json()
+        self.assertGreaterEqual(response_dict["count"], 1)
+        self.assertGreaterEqual(len(response_dict["results"]), 1)
 
     def test_create_item_with_image_base64(self):
         # Create a simple PNG image in base64
@@ -46,9 +54,7 @@ class ItemAPITestCase(TestCase):
             "image": image_b64,
         }
 
-        response = self.client.post(
-            "/items/", data, format="json"
-        )  # , format="multipart")
+        response = self.client.post("/items/", data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(Item.objects.filter(title="Coat").exists())
         item = Item.objects.get(title="Coat")
@@ -59,3 +65,34 @@ class ItemAPITestCase(TestCase):
             self.assertEqual(image.size, (8, 8))
         item.image.delete(save=False)
         self.assertFalse(os.path.exists(image_path))
+
+    def test_update_item(self):
+        url = f"/items/{self.item.pk}/"
+        data = {
+            "title": "T-shirt updated",
+            "size": "M",
+            "type": "Shirt",
+            "color": "White",
+            "description": "Updated description",
+        }
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.item.refresh_from_db()
+        self.assertEqual(self.item.title, "T-shirt updated")
+        self.assertEqual(self.item.description, "Updated description")
+
+    def test_partial_update_item(self):
+        url = f"/items/{self.item.pk}/"
+        data = {
+            "description": "Partially updated description",
+        }
+        response = self.client.patch(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.item.refresh_from_db()
+        self.assertEqual(self.item.description, "Partially updated description")
+
+    def test_delete_item(self):
+        url = f"/items/{self.item.pk}/"
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Item.objects.filter(pk=self.item.pk).exists())

@@ -42,7 +42,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # Switch to non-root user
-#USER appuser
+USER appuser
 RUN mkdir -p /app/staticfiles
 
 # Expose the application port

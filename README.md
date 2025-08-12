@@ -103,6 +103,24 @@ To run all tests for the project:
 python manage.py test
 ```
 
+To run a specific test:
+```bash
+python manage.py test dressing.tests.test_hanger
+```
+
+> [!WARNING]
+> If you encounter errors when running tests (especially on Windows), such as:
+> ```
+> django.core.exceptions.AppRegistryNotReady: Models aren't loaded yet.
+> ```
+>
+> This can happen for example with `dressing.tests.test_tag_read`.
+> You can run the tests inside Docker instead (note: this is slower):
+>
+> ```bash
+> docker compose -f docker-compose.dev.yml run --remove-orphans dressing-api
+> ```
+
 ---
 
 Feel free to contribute or adapt this project for your own needs!
@@ -143,5 +161,5 @@ You can then open `db_schema.png` to view your database schema visually.
 ## TODO
 
 - Check the environment to production mode (update settings, security, etc.).
-- Add tests to each API endpoints.
+- Check tests to each API endpoints.
 - Adapt the front to use this new API version.
