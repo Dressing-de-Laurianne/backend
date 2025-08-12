@@ -1,25 +1,56 @@
-# Use an official Python image as a parent image
-FROM python:3.13-slim
+# Stage 1: Base build stage
+FROM python:3.13-slim AS builder
 
-# Set the working directory in the container
+# Create the app directory
+RUN mkdir /app
+
+# Set the working directory
 WORKDIR /app
 
-# Copy requirements file and install dependencies
-COPY requirements.txt ./
+# Set environment variables to optimize Python
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Upgrade pip and install dependencies
+RUN pip install --upgrade pip
+
+# Copy the requirements file first (better caching)
+COPY requirements.txt /app/
+
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire project code into the container
-COPY . .
+# Stage 2: Production stage
+FROM python:3.13-slim
 
-# Collect static files (optional, useful if you use collectstatic)
-# RUN python manage.py collectstatic --noinput
+RUN useradd -m -r appuser && \
+   mkdir /app && \
+   chown -R appuser /app
 
-# Expose port 8000
+# Copy the Python dependencies from the builder stage
+COPY --from=builder /usr/local/lib/python3.13/site-packages/ /usr/local/lib/python3.13/site-packages/
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
+
+# Set the working directory
+WORKDIR /app
+
+# Copy application code
+COPY --chown=appuser:appuser . .
+
+# Set environment variables to optimize Python
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Switch to non-root user
+#USER appuser
+RUN mkdir -p /app/staticfiles
+
+# Expose the application port
 EXPOSE 8000
 
 # Make the entrypoint script executable and use it as entrypoint
 RUN chmod +x /app/entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
 
-# Set the default command to run when the container starts
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Start the application using Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "dev_env.wsgi:application"]

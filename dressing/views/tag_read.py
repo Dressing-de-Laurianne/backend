@@ -15,16 +15,21 @@ from dressing.models import (
     TagReadSerializer,
     TagSerializer,
 )
+from dressing.shared import namespace
 
 logger = logging.getLogger(__name__)
 
-# Variables globales pour la gestion des associations
-TAG_WAIT_ID = None
-TAG_WAIT_TYPE = None
-TAG_FOUND_ID = None
+manager = None
+manager_namespace = None
 
-ITEM_FOUND = None
-HANGER_FOUND = None
+# Variables globales pour la gestion des associations
+# ns = get_manager_namespace()
+# ns.TAG_WAIT_ID = None
+# ns.TAG_WAIT_TYPE = None
+# ns.TAG_FOUND_ID = None
+
+# ns.ITEM_FOUND = None
+# ns.HANGER_FOUND = None
 
 
 def tag_received(tag_received: str):
@@ -32,25 +37,24 @@ def tag_received(tag_received: str):
     Function to handle the reception of a tag.
     It updates the global variables based on the tag received.
     """
-    global TAG_WAIT_ID, TAG_WAIT_TYPE, TAG_FOUND_ID
-    global ITEM_FOUND, HANGER_FOUND
+    ns = namespace
 
-    TAG_FOUND_NAME = tag_received["tag"]
-    tag = Tag.objects.filter(tag=TAG_FOUND_NAME).first()
+    ns.TAG_FOUND_NAME = tag_received["tag"]
+    tag = Tag.objects.filter(tag=ns.TAG_FOUND_NAME).first()
     if tag is None:
-        tag = Tag.objects.create(tag=TAG_FOUND_NAME)
-    TAG_FOUND_ID = tag.pk
+        tag = Tag.objects.create(tag=ns.TAG_FOUND_NAME)
+    ns.TAG_FOUND_ID = tag.pk
 
-    logger.info(f"TAG_FOUND_ID: {TAG_FOUND_ID}, TAG_FOUND_NAME: {TAG_FOUND_NAME}")
+    logger.info(f"TAG_FOUND_ID: {ns.TAG_FOUND_ID}, TAG_FOUND_NAME: {ns.TAG_FOUND_NAME}")
 
     message = {}
-    if TAG_WAIT_ID is not None:
-        if TAG_WAIT_TYPE == "item":
-            tag.item_id = Tag.objects.get(pk=TAG_WAIT_ID)
+    if ns.TAG_WAIT_ID is not None:
+        if ns.TAG_WAIT_TYPE == "item":
+            tag.item_id = Item.objects.get(pk=ns.TAG_WAIT_ID)
             tag.save()
-            message_object = TagSerializer(tag.item_id).data
-        elif TAG_WAIT_TYPE == "hanger":
-            tag.hanger_id = Hanger.objects.get(pk=TAG_WAIT_ID)
+            message_object = ItemSerializer(tag.item_id).data
+        elif ns.TAG_WAIT_TYPE == "hanger":
+            tag.hanger_id = Hanger.objects.get(pk=ns.TAG_WAIT_ID)
             tag.save()
             message_object = HangerSerializer(tag.hanger_id).data
 
@@ -59,31 +63,34 @@ def tag_received(tag_received: str):
             "tag": TagSerializer(tag).data,
             "object": message_object,
         }
-        TAG_WAIT_ID = None  # Reset if no tag found
+        ns.TAG_WAIT_ID = None  # Reset if no tag found
 
     else:
         if tag.hanger_id is not None:
-            HANGER_FOUND = tag.hanger_id
+            ns.HANGER_FOUND = tag.hanger_id
             message = {
                 "status": "wait_item",
-                "hanger": HangerSerializer(HANGER_FOUND).data,
+                "hanger": HangerSerializer(ns.HANGER_FOUND).data,
             }
         elif tag.item_id is not None:
-            ITEM_FOUND = tag.item_id
-            message = {"status": "wait_hanger", "item": ItemSerializer(ITEM_FOUND).data}
+            ns.ITEM_FOUND = tag.item_id
+            message = {
+                "status": "wait_hanger",
+                "item": ItemSerializer(ns.ITEM_FOUND).data,
+            }
 
-        if ITEM_FOUND is not None and HANGER_FOUND is not None:
-            item = Item.objects.filter(pk=ITEM_FOUND.pk).first()
+        if ns.ITEM_FOUND is not None and ns.HANGER_FOUND is not None:
+            item = Item.objects.filter(pk=ns.ITEM_FOUND.pk).first()
             if item is not None:
-                item.hanger_id = HANGER_FOUND
+                item.hanger_id = ns.HANGER_FOUND
                 item.save()
             message = {
                 "status": "association_complete",
                 "item": ItemSerializer(item).data,
-                "hanger": HangerSerializer(HANGER_FOUND).data,
+                "hanger": HangerSerializer(ns.HANGER_FOUND).data,
             }
-            ITEM_FOUND = None
-            HANGER_FOUND = None
+            ns.ITEM_FOUND = None
+            ns.HANGER_FOUND = None
     return message
 
 
@@ -127,7 +134,7 @@ def tag_wait(request, type: str, id: int):
     """
     if request.method == "GET":
         # Receives an item ID in the URL, stores it in a global variable, and waits until the variable is reset to None before responding
-        global TAG_WAIT_ID, TAG_WAIT_TYPE
+        ns = namespace
         if (type == "item" and Item.objects.filter(pk=id).exists() is False) and (
             type == "hanger" and Hanger.objects.filter(pk=id).exists() is False
         ):
@@ -136,19 +143,19 @@ def tag_wait(request, type: str, id: int):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        TAG_WAIT_ID = id
-        TAG_WAIT_TYPE = type
+        ns.TAG_WAIT_ID = id
+        ns.TAG_WAIT_TYPE = type
 
-        logger.info(f"Item waiting for tag (POST /tag_read/): {TAG_WAIT_ID}")
+        logger.info(f"Item waiting for tag (POST /tag_read/): {ns.TAG_WAIT_ID}")
         # Active wait until TAG_WAIT_ID is reset to None
-        while TAG_WAIT_ID is not None:
+        while ns.TAG_WAIT_ID is not None:
             time.sleep(0.5)
 
         return Response(
             {
                 "status": "association_complete",
                 "id": id,
-                "type": TAG_WAIT_TYPE,
-                "tag_id": TAG_FOUND_ID,
+                "type": ns.TAG_WAIT_TYPE,
+                "tag_id": ns.TAG_FOUND_ID,
             }
         )
