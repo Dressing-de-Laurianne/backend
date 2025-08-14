@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/github/Dressing-de-Laurianne/backend/graph/badge.svg?token=YMIUEXTXP8)](https://codecov.io/github/Dressing-de-Laurianne/backend)
+
 # Dressing API Project
 
 This project is a Django REST API for managing a virtual wardrobe, built with Django, Django REST Framework and SQLite. It includes a Swagger UI for API exploration and is based on the official Django REST Framework tutorial.
