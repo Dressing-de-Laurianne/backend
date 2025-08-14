@@ -11,3 +11,9 @@ profile = "black"
 # Enable Pyflakes `E` and `F` codes by default.
 select = ["E", "F"]
 ignore = ["E501", "E741"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "dev_env.settings"
+filterwarnings = [
+    "ignore::UserWarning",
+]

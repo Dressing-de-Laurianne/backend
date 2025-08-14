@@ -11,6 +11,10 @@ psycopg2-binary==2.9.10
 django-cors-headers==4.7.0
 
 pre-commit==4.2.0
+pytest-django==4.11.1
+pytest-xdist==3.8.0
+pytest-cov==6.2.1
+#genbadge[all]==1.1.2
 
 django-extensions==4.1
 # Install Graphviz https://graphviz.org/download/

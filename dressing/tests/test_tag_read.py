@@ -6,7 +6,7 @@ from django.test.testcases import SerializeMixin
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from dressing.models import Hanger, Item, Tag
+from dressing.models import Hanger, Item, Tag, TagRead
 
 
 class TagReadTestCaseMixin(TransactionTestCase, SerializeMixin):
@@ -15,6 +15,8 @@ class TagReadTestCaseMixin(TransactionTestCase, SerializeMixin):
     def setUp(self):
         self.client = APIClient()
         self.client.login(username="admin", password="admin")
+
+        self.tag_read = TagRead.objects.create(tag="NFC_TAG_1")
 
         self.item = Item.objects.create(
             title="T-shirt",
@@ -40,6 +42,40 @@ class TagReadTestCaseMixin(TransactionTestCase, SerializeMixin):
             mqtt_topic="/feed/hanger_withouttag"
         )
         self.tag_without_hanger = Tag.objects.create(tag="myTagWithoutHanger")
+
+
+class TagReadAPITestCase_tag_read_api(TagReadTestCaseMixin):
+    def test_create_tag_read(self):
+        url = "/tag_read/"
+        data = {
+            "tag": "NFC_TAG_2",
+        }
+
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(TagRead.objects.filter(tag="NFC_TAG_2").exists())
+
+    def test_list_tag_read(self):
+        url = "/tag_read/"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_dict = response.json()
+        self.assertGreaterEqual(response_dict["count"], 1)
+        self.assertGreaterEqual(len(response_dict["results"]), 1)
+
+    def test_get_tag_read(self):
+        url = f"/tag_read/{self.tag_read.pk}/"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_dict = response.json()
+        self.assertEqual(response_dict["id"], self.tag_read.pk)
+        self.assertEqual(response_dict["tag"], self.tag_read.tag)
+
+    def test_delete_tag_read(self):
+        url = f"/tag_read/{self.tag_read.pk}/"
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(TagRead.objects.filter(pk=self.tag_read.pk).exists())
 
 
 class TagReadAPITestCase_item_with_hanger(TagReadTestCaseMixin):
@@ -164,4 +200,15 @@ class TagReadAPITestCase_tag_with_hanger(TagReadTestCaseMixin):
         self.assertEqual(
             Tag.objects.get(hanger_id=self.hanger_without_tag.pk),
             self.tag_without_hanger,
+        )
+
+
+class TagReadAPITestCase_tag_with_error(TagReadTestCaseMixin):
+    def test_associate_tag_with_error(self):
+
+        response = self.client.get("/tag_wait/hanger/400/")
+        response_dict = response.json()
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response_dict["error"], "The id 400 does not exist for type 'hanger'."
         )

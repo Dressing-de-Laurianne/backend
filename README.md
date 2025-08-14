@@ -100,13 +100,19 @@ python manage.py migrate
 To run all tests for the project:
 
 ```bash
-python manage.py test
+pytest
 ```
 
 To run a specific test:
 ```bash
-python manage.py test dressing.tests.test_hanger
+pytest dressing/tests/test_hanger.py
 ```
+
+Create reports, e.g in a "reports" folder, with the tests reports and codecoverage in XML and HTML:
+```bash
+pytest --junitxml=./reports/test_results.xml --cov=dressing --cov-report=xml:./reports/coverage.xml --cov-report=html:./reports/coverage_html/
+```
+
 
 > [!WARNING]
 > If you encounter errors when running tests (especially on Windows), such as:
@@ -114,11 +120,11 @@ python manage.py test dressing.tests.test_hanger
 > django.core.exceptions.AppRegistryNotReady: Models aren't loaded yet.
 > ```
 >
-> This can happen for example with `dressing.tests.test_tag_read`.
+> This can happen for example with `dressing/tests/test_tag_read`.
 > You can run the tests inside Docker instead (note: this is slower):
 >
 > ```bash
-> docker compose -f docker-compose.dev.yml run --remove-orphans dressing-api
+> docker compose -f docker-compose.dev.yml run --remove-orphans dressing-api pytest
 > ```
 
 ---

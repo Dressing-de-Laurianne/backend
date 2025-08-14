@@ -54,3 +54,5 @@ celerybeat.pid
 local_settings.py
 # Sentry
 .sentryclirc
+# Pytest reports
+reports/

@@ -136,7 +136,7 @@ def tag_wait(request, type: str, id: int):
     if request.method == "GET":
         # Receives an item ID in the URL, stores it in a global variable, and waits until the variable is reset to None before responding
         ns = namespace
-        if (type == "item" and Item.objects.filter(pk=id).exists() is False) and (
+        if (type == "item" and Item.objects.filter(pk=id).exists() is False) or (
             type == "hanger" and Hanger.objects.filter(pk=id).exists() is False
         ):
             return Response(

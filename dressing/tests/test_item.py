@@ -6,7 +6,7 @@ from PIL import Image
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from dressing.models import Item
+from dressing.models import Hanger, Item
 
 
 class ItemAPITestCase(TestCase):
@@ -96,3 +96,26 @@ class ItemAPITestCase(TestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Item.objects.filter(pk=self.item.pk).exists())
+
+
+def test_item_adminlist(admin_client):
+    items = [
+        Item(
+            title="T-shirt",
+            size="M",
+            type="Shirt",
+            color="White",
+            description="White cotton t-shirt",
+        )
+        for a in range(0, 20)
+    ]
+    Item.objects.bulk_create(items)
+    items[0].hanger_id = Hanger.objects.create(mqtt_topic="Hanger 1")
+    items[0].save()
+    url = "/admin/dressing/item/"
+    response = admin_client.get(url)
+    assert response.status_code == 200
+
+    cl = response.context["cl"]
+    assert cl.result_count == 20
+    assert cl.full_result_count == 20
