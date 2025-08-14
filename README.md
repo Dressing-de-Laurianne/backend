@@ -1,3 +1,4 @@
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![codecov](https://codecov.io/github/Dressing-de-Laurianne/backend/graph/badge.svg?token=YMIUEXTXP8)](https://codecov.io/github/Dressing-de-Laurianne/backend)
 
 # Dressing API Project
