@@ -84,3 +84,37 @@ class OutfitAPITestCase(TestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Outfit.objects.filter(pk=self.outfit.pk).exists())
+
+
+def test_outfit_adminlist(admin_client):
+    outfits = [
+        Outfit(title=f"Outfit {i}", description=f"Description for Outfit {i}")
+        for i in range(20)
+    ]
+    Outfit.objects.bulk_create(outfits)
+    outfits[0].items.set(
+        [
+            Item.objects.create(
+                title="T-shirt",
+                size="M",
+                type="Shirt",
+                color="White",
+                description="White cotton t-shirt",
+            ),
+            Item.objects.create(
+                title="T-shirt",
+                size="M",
+                type="Shirt",
+                color="White",
+                description="White cotton t-shirt",
+            ),
+        ]
+    )
+    outfits[0].save()
+    url = "/admin/dressing/outfit/"
+    response = admin_client.get(url)
+    assert response.status_code == 200
+
+    cl = response.context["cl"]
+    assert cl.result_count == 20
+    assert cl.full_result_count == 20

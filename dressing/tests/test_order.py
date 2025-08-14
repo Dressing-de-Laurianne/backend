@@ -71,3 +71,34 @@ class OrderAPITestCase(TestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Order.objects.filter(pk=self.order.pk).exists())
+
+
+def test_order_adminlist(admin_client):
+    orders = [Order(status="Pending") for i in range(20)]
+    Order.objects.bulk_create(orders)
+    orders[0].items.set(
+        [
+            Item.objects.create(
+                title="T-shirt",
+                size="M",
+                type="Shirt",
+                color="White",
+                description="White cotton t-shirt",
+            ),
+            Item.objects.create(
+                title="T-shirt",
+                size="M",
+                type="Shirt",
+                color="White",
+                description="White cotton t-shirt",
+            ),
+        ]
+    )
+    orders[0].save()
+    url = "/admin/dressing/order/"
+    response = admin_client.get(url)
+    assert response.status_code == 200
+
+    cl = response.context["cl"]
+    assert cl.result_count == 20
+    assert cl.full_result_count == 20
