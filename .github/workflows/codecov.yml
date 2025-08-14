@@ -27,7 +27,7 @@ jobs:
           python manage.py migrate
 
       - name: Run tests
-        run: pytest --cov=dressing --cov-branch --cov-report=xml --junitxml=junit.xml -o junit_family=legacy
+        run: pytest --cov=dressing --cov-report=xml --junitxml=junit.xml -o junit_family=legacy
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
