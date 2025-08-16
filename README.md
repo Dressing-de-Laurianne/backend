@@ -1,9 +1,10 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![codecov](https://codecov.io/github/Dressing-de-Laurianne/backend/graph/badge.svg?token=YMIUEXTXP8)](https://codecov.io/github/Dressing-de-Laurianne/backend)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Dressing-de-Laurianne/backend/codecov.yml)
-![Made Wiwi Django REST](https://img.shields.io/badge/Django-REST-blue?style=flat&logo=django&color=%23092E20&link=https%3A%2F%2Fwww.django-rest-framework.org%2F)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Dressing-de-Laurianne/backend/codecov.yml)](https://github.com/Dressing-de-Laurianne/backend/actions/workflows/codecov.yml)
+[![Made Wiwi Django REST](https://img.shields.io/badge/Django-REST-blue?style=flat&logo=django&color=%23092E20)](https://www.django-rest-framework.org/)
 
-# Dressing API Project
+
+# Dressing API Projec
 
 This project is a Django REST API for managing a virtual wardrobe, built with Django, Django REST Framework and SQLite. It includes a Swagger UI for API exploration and is based on the official Django REST Framework tutorial.
 
