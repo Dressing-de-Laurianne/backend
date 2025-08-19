@@ -4,7 +4,7 @@
 [![Made Wiwi Django REST](https://img.shields.io/badge/Django-REST-blue?style=flat&logo=django&color=%23092E20)](https://www.django-rest-framework.org/)
 
 
-# Dressing API Projec
+# Dressing API Project
 
 This project is a Django REST API for managing a virtual wardrobe, built with Django, Django REST Framework and SQLite. It includes a Swagger UI for API exploration and is based on the official Django REST Framework tutorial.
 
